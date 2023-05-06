@@ -1,0 +1,22 @@
+Select BillingCountry, count(invoiceid)
+from invoice
+group by BillingCountry
+order by 2 Desc
+---------------------------------------------
+
+Select BillingCity, sum(total)
+from invoice
+group by BillingCity
+order by 2 Desc
+
+--------------------------------------------
+
+Select ie.customerid, sum(unitprice)
+from invoice as ie
+join InvoiceLine as il
+on ie.invoiceid = il.invoiceid
+join Customer as cr
+on ie.customerid = cr.customerid
+group by 1
+order by 2 desc
+limit 1
