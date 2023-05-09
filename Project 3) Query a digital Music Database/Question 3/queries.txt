@@ -1,0 +1,12 @@
+
+
+
+/*Second Query*/
+select name, milliseconds
+from track
+where milliseconds > (
+select avg(milliseconds) 
+  from track
+)
+order by milliseconds desc
+limit 10

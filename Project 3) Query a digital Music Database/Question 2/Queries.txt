@@ -1,0 +1,77 @@
+/* Query 1 - query used for first insight /
+
+Select distinct(cr.email), cr.firstname, cr.lastname, g.name
+from invoice as ie
+join InvoiceLine as il
+on ie.invoiceid = il.invoiceid
+join Customer as cr
+on ie.customerid = cr.customerid
+join track as t
+on t.trackid = il.trackid
+join genre as g
+on g.genreid = t.genreid
+where g.name = 'Rock'
+order by 2
+------------------------------------
+
+/* Query 2 - query used for Second insight /
+
+select ROW_NUMBER() OVER (order by count(g.name) desc) as " ", a.artistid, at.name, count(g.name) as Songs
+from Genre as g
+join track as t
+on g.genreid = t.genreid
+join album as a
+on t.albumid = a.albumid
+join artist as at
+on a.artistid = at.artistid
+where g.name = 'Rock'
+group by at.name, a.artistid
+order by count(g.name) desc
+limit 10
+
+/* Query 3 - query used for Third insight /
+
+/* The artist that has earned the most */
+
+select ROW_NUMBER() OVER (order by sum(il.unitprice) desc) as " ", at.name, sum(il.unitprice) as "amount spent" 
+from customer as cr
+join invoice as iv
+on cr.customerid = iv.customerid
+join invoiceline as il
+on iv.invoiceid = il.invoiceid
+join track as tr
+on il.trackid = tr.trackid
+join album as a
+on tr.albumid = a.albumid
+join artist as at
+on a.artistid = at.artistid
+group by at.name
+order by 3 desc
+limit 5
+
+/*Top Purchaser*/
+select at.name, sum(il.unitprice), iv.customerid, cr.firstname, cr.lastname
+from customer as cr
+join invoice as iv
+on cr.customerid = iv.customerid
+join invoiceline as il
+on iv.invoiceid = il.invoiceid
+join track as tr
+on il.trackid = tr.trackid
+join album as a
+on tr.albumid = a.albumid
+join artist as at
+on a.artistid = at.artistid
+group by at.name, iv.customerid, cr.firstname, cr.lastname
+order by sum(il.unitprice) desc, at.name
+limit 5 
+
+
+
+
+
+
+
+
+
+

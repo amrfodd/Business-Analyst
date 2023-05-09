@@ -1,0 +1,111 @@
+/* Query 1 - query used for first insight /
+
+Select BillingCountry, count(invoiceid)
+from invoice
+group by BillingCountry
+order by 2 Desc
+---------------------------------------------
+/* Query 2 - query used for second insight /
+
+Select BillingCity, sum(total)
+from invoice
+group by BillingCity
+order by 2 Desc
+
+--------------------------------------------
+/* Query 3 - query used for third insight /
+
+Select ie.customerid, sum(unitprice)
+from invoice as ie
+join InvoiceLine as il
+on ie.invoiceid = il.invoiceid
+join Customer as cr
+on ie.customerid = cr.customerid
+group by 1
+order by 2 desc
+limit 1
+
+-------------------------------------------
+/* Query 4 - query used for 4th insight /
+
+
+Select distinct(cr.email), cr.firstname, cr.lastname, g.name
+from invoice as ie
+join InvoiceLine as il
+on ie.invoiceid = il.invoiceid
+join Customer as cr
+on ie.customerid = cr.customerid
+join track as t
+on t.trackid = il.trackid
+join genre as g
+on g.genreid = t.genreid
+where g.name = 'Rock'
+order by 2
+
+
+
+-------------------------------------------
+/* Query 5 - query used for 5th insight */
+select ROW_NUMBER() OVER (order by count(g.name) desc) as " ", a.artistid, at.name, count(g.name) as Songs
+from Genre as g
+join track as t
+on g.genreid = t.genreid
+join album as a
+on t.albumid = a.albumid
+join artist as at
+on a.artistid = at.artistid
+where g.name = 'Rock'
+group by at.name, a.artistid
+order by count(g.name) desc
+limit 10
+
+
+
+
+
+
+-------------------------------------------
+/* Query 6 - query used for 6th insight*/ 
+
+select ROW_NUMBER() OVER (order by sum(il.unitprice) desc) as " ", at.name, sum(il.unitprice) as "amount spent" 
+from customer as cr
+join invoice as iv
+on cr.customerid = iv.customerid
+join invoiceline as il
+on iv.invoiceid = il.invoiceid
+join track as tr
+on il.trackid = tr.trackid
+join album as a
+on tr.albumid = a.albumid
+join artist as at
+on a.artistid = at.artistid
+group by at.name
+order by 3 desc
+limit 5
+
+
+-------------------------------------------
+/* Query 7 - query used for 7th insight */
+
+
+
+
+“select sub.*
+From (
+    select at.name, sum(il.unitprice), iv.customerid, cr.firstname, cr.lastname
+  from customer as cr
+  join invoice as iv
+  on cr.customerid = iv.customerid
+  join invoiceline as il
+  on iv.invoiceid = il.invoiceid
+  join track as tr
+  on il.trackid = tr.trackid
+  join album as a
+  on tr.albumid = a.albumid
+  join artist as at
+  on a.artistid = at.artistid
+  group by at.name, iv.customerid, cr.firstname, cr.lastname
+  order by sum(il.unitprice) desc, at.name
+  limit 20 ) sub
+  where name = 'Iron Maiden' ”
+
